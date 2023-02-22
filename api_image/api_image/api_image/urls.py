@@ -2,45 +2,29 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
-from rest_framework.routers import DefaultRouter
 from django.views.generic.base import RedirectView
 from api.views import *
-from rest_framework_nested.routers import NestedDefaultRouter
+from api.viewsets import *
+from .routers import router, user_router, image_router
 
-
-router=DefaultRouter()            # default router
-router.register('adduser',AddUserViewSet, basename='add-user')
-router.register('user',UserViewSet, basename='user')
-router.register('uploaduserimage',UploadUserUimageViewSet, basename='upload-image')
-router.register('userimage',UserImageViewSet, basename='user-image')
-router.register('ownerimage',OwnerImageViewSet, basename='owner-image')
-
-
-
-user_router=NestedDefaultRouter(router, 'user', lookup='user')   # The same name as  router.register('user'
-user_router.register('images',SingleUserViewSet, basename='user-images')
-
-# image_router=NestedDefaultRouter(router, 'userimage', lookup='userimage')    # The same name as  router.register('userimage'
-# image_router.register('users',SingleImageViewSet, basename='images-user')
-
-# Example Nested link
-# http://127.0.0.1:8000/api/user/1/images/84/
-# http://127.0.0.1:8000/api/user/1/images/84/
-
-# http://127.0.0.1:8000/api/userimage/62/
-# http://127.0.0.1:8000/api/userimage/62/
-
-# http://127.0.0.1:8000/api/userimage/62/
 
 
 urlpatterns = [
-    # path(r'^$', RedirectView.as_view(url='api/'),name='base'),
-    path('', RedirectView.as_view(url='api/'),name='base'),
-    path('api/admin/', admin.site.urls),
-    path('api/', include((router.urls,'api'))),
-    path('api/', include((user_router.urls,'nested'))),
-    # path('api/', include((image_router.urls,'nested'))),
-    path('token/<hash>/', TokenView.as_view(), name='apiview')
+    path('', APIUrls.as_view(),name='base'),
+    path('api/', APIUrls.as_view(),name='base'),
 
+    path('', RedirectView.as_view(url='api/'),name='api-v2'),
+    path('api/admin/', admin.site.urls),
+
+    path('api/userimage/<str:pk>/',DetailImageView.as_view(),name='userimages-id'),
+    path('api/userimage/', UploadUserImageView.as_view(),name='userimage'),
+    path('api/generic/userimage/<str:pk>/', UserImageGenericView.as_view(),name='userimage'),
+    path('api/gallery/<str:pk>/', GalleryView.as_view(),name='userimage'),
+    path('api/token/<hash>/', TokenView.as_view(), name='apiview'),
+
+    path('api/v2/', include((router.urls,'api'))),
+    path('api/v2/', include((user_router.urls,'user-nested-router'))),
+    path('api/v2/', include((image_router.urls,'image-nested-router'))),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

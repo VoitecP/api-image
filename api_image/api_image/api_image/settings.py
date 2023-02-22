@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     ## added manually
+    'django_filters',
     'api',
     'rest_framework',
     'gallery',
@@ -138,10 +139,12 @@ INTERNAL_IPS=[
     "127.0.0.1"
 ]
 
+
 REST_FRAMEWORK ={
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 4
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
 }
+
 
 # Default render classes declared
 REST_FRAMEWORK = {

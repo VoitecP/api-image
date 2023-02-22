@@ -1,87 +1,29 @@
 from gallery.models import *
 from .serializers import *
-from django.shortcuts import redirect
-from rest_framework.viewsets import ModelViewSet
+from django.shortcuts import redirect, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.filters import SearchFilter, OrderingFilter
+
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import CreateModelMixin
+
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import status
+# from rest_framework.filters import SearchFilter, OrderingFilter
+
+class Paginator(PageNumberPagination):
+    page_size=5
+    page_size_query_param = 'page_size'
+    max_page_size=10
 
 
-class UserViewSet(ModelViewSet):
-    pagination_class=PageNumberPagination
-    queryset=User.objects.all()
-    serializer_class=UserSerializer
-    # filterset_class=UserFilter
-    filter_backends=[SearchFilter,OrderingFilter]
-    search_fields=['id','user_name']        # allow to search exact value id or User Name
-    # search_fields=['id','user']
-    # http_method_names=['get','post','head','delete']
-    http_method_names=['get']
-   
-
-class UserImageViewSet(ModelViewSet):       # Allow to Get User 
-    pagination_class=PageNumberPagination
-    queryset=UserImage.objects.all()        #.filter(user__id=1)  # For testing
-    serializer_class=UserImageSerializer
-    http_method_names=['get']
-
-    def perform_create(self, serializer):
-        serializer.save()
-
-
-class OwnerImageViewSet(ModelViewSet):       # Allow to Get User 
-    pagination_class=PageNumberPagination
-    queryset=UserImage.objects.all()        #.filter(user__id=1)  # For testing
-    # queryset=UserImage.objects.filter(user=self.kwargs["user_pk"])
-    serializer_class=UserImageSerializer
-    http_method_names=['get']
-
-    
-# def get_serializer_context(self):
-#         context={"user":self.kwargs["pk"]}
-#         # context={"user_id":self.kwargs["user_pk"]}
-#         return context
-
-    def get_queryset(self): 
-          
-            # queryset=UserImage.objects.all().filter(user=1)
-            # queryset=UserImage.objects.filter(user__user=self.kwargs['pk'])
-            # x=self.kwargs['user_id']
-            # /66/ adres get id of image filters 
-            x=1
-            queryset=UserImage.objects.filter(user=x)       # show only user 1 images without parameters
-
-            # queryset=UserImage.objects.filter(ticker__ticker=self.kwargs['stocks_ticker'])
-
-            return queryset
-
-
-
-class OwnView(APIView):
-    def get(self, *args,**kwargs):                   #  first() prevents multi queryset error
-        # queryset=UserImage.objects.get(**kwargs)      
-        queryset=UserImage.objects.filter(**kwargs).first()
-        response=Response()
-        response['Token Link Validator']='Proparbly wrong link'
-        try:
-            return redirect(queryset.img.url)  
-        except:
-            return response
-
-
-
-
-
-class AddUserViewSet(ModelViewSet):         # Allow to Create User
-    queryset=User.objects.none()
-    serializer_class=CreateUserSerializer
-    http_method_names=['post']
-   
-
-class UploadUserUimageViewSet(ModelViewSet):
-    queryset=UserImage.objects.none()
-    serializer_class=UploadUserImageSerializer
+# class SerializerMixin:          #  Not used now, Interesting but not working properly
+#     serializer_map={
+#         "GET" : UserImageSerializer,
+#         "POST" : UploadUserImageSerializer,
+#     }
+#     def get_serializer(self, *args, **kwargs):
+#         return self.serializer_map.get(self.request.method , self.serializer_class)
 
 
 class TokenView(APIView):
@@ -95,85 +37,76 @@ class TokenView(APIView):
         except:
             return response
 
+  
+class DetailImageView(APIView):
+    serializer_class=UserImageSerializer
 
-class SingleUserViewSet(ModelViewSet):
-    pagination_class=PageNumberPagination
-    # queryset=User.objects.filter(id=1)
-    serializer_class=UserSerializer
-
-    def get_queryset(self):
-        # queryset=User.objects.filter(user__id=self.kwargs["user_pk"])
-        queryset=UserImage.objects.filter(user__id=self.kwargs["user_pk"])
-        return queryset
-    
-    def get_serializer_context(self):
-        context={"user_id":self.kwargs["user_pk"]}
-        # context={"user_id":self.kwargs["user_pk"]}
-        return context
-
-## wrong
-class SingleImageViewSet(ModelViewSet):
-    pagination_class=PageNumberPagination
-    queryset=User.objects.filter(id=1)
-    serializer_class=ImageSerializer
-
-    def get_queryset(self):
-        # queryset=UserImage.objects.filter(user__id=self.kwargs["user_pk"])
-        queryset=UserImage.objects.filter(id=self.kwargs["pk"])
-        return queryset
-    
-    def get_serializer_context(self):
-        context={"user_id":self.kwargs["user_pk"]}
-        # context={"user_id":self.kwargs["user_pk"]}
-        return context
+    def get(self,request,pk, *args, **kwargs):
+        queryset=UserImage.objects.filter(id=pk)
+        serializer=UserImageSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-##########
+class UploadUserImageView(APIView):
+    serializer_class=UploadUserImageSerializer
+
+    def get(self, request):
+        queryset=UserImage.objects.none()
+        return Response({"Upload": 'Image'})
+
+    def post(self, request):
+        serializer=UploadUserImageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # queryset=UserImage.objects.filter(id=request.data["id"]).values()
+            return serializer.data 
+            # Response({"Message":"New added", "List":serializer.data})
 
 
-# class UploadUserUimageViewSet(ModelViewSet):
-#     queryset=UserImage.objects.none()
-#     serializer_class=UploadUserImageSerializer
+class UserImageGenericView(GenericAPIView,CreateModelMixin):
+    serializer_class=UploadUserImageSerializer
+    queryset=UserImage.objects.all()
 
-#     def get_serializer_class(self):
-#         tier=int(self.tier_t)
-#         # # tier=self.request.tier_t
-#         if tier in [1,2]:
-#             return UploadUserImageSerializer
-#         else:
-#             return Upload2UserImageSerializer
+    def perform_create(self, serializer):
+        queryset=get_object_or_404(User, id=self.request.data.get('user'))
+        return serializer.save(user=queryset)
 
-#         # serializer.data['exp_time'] == None
-#         # serializer.save()
-#         # return super().perform_create(serializer)
+    def post(self, serializer, request, *args, **kwargs):
+        # return self.create(request, *args, **kwargs)
+        return Response({"Successfuly send image":serializer.data})
+        
     
 
+class GalleryView(APIView, Paginator):
+    serializer_class=UserImageSerializer
 
-## not working
-    # def get_serializer_context(self, *args, **kwargs):
-    #     context=super().get_serializer_context()
-    #     context.update({"request":self.request})
-    #     return context
-
-
-
-
-# class UploadUserUimageViewSet(ModelViewSet):
-#     queryset=UserImage.objects.none()
-#     # user_type=SerializerMe
-#     # serializer_class=DynamicUploadUserImageSerializer
-#     serializer_class=DynamicFieldSerializer
+    def get(self,request,pk):
+        queryset=UserImage.objects.filter(user__id=pk)
+        page=self.paginate_queryset(queryset, request ,view=self)
+        serializer=UserImageSerializer(page, many=True)
+        response=self.get_paginated_response(serializer.data)
+        return response
+       
+class APIUrls(APIView):
+    """
+    Add url endpoints to base view
+    """
+    def get(self,request):
+        data={
+            "Root                           ": "http://127.0.0.1:8000/api/",
+            "Upload Image Endpoint          ": "http://127.0.0.1:8000/api/userimage/",
+            "Image Detail View              ":"http://127.0.0.1:8000/api/userimage/1/",
+            "Upload Image Endpoint, generic ": "http://127.0.0.1:8000/api/generic/userimage/1",
+            "User's Gallery, paginated      ": "http://127.0.0.1:8000/api/gallery/1/",
+            "Example Endpoint for Token     ": "http://127.0.0.1:8000/api//token/<hash>",
+            "":"",
+            "Below List of Api Endpoint generated by Router, and Nested Router": "",
+            "":"",
+            "Api v2 Routed                  ":"http://127.0.0.1:8000/api/v2/",
+        }
+        return Response(data)
 
     
 
-
-
-## select user from id or from list ? to view queryset
-## make redirection to self user images or 
-
-# or start from select by id/name  from invisible list then see list and then post
-### add pagination to list view of images in user
-
-## expiring link set config seconds in serializer in image send now!!!\
-
-# cleaning the import and pip and decoupler and check erors clean code and comments
+    
+       

@@ -5,6 +5,7 @@ import pytz
 
 
 def token_method(self, model):
+   
     t=int(model.tier_t)
     request=self.context.get('request')
     now=datetime.datetime.now().replace(tzinfo=pytz.UTC)
@@ -56,23 +57,32 @@ def thumb2_method(self, model):
             return 'File not found'
 
 
-def date_method(self, model):
-    date=model.upload_date.strftime("%m/%d/%Y, %H:%M:%S")
-    t=int(model.tier_t)
 
-    if t in [1,2]:
-        return 'No date permissions'         
-    else:                                  
-        return (f'Upload date {date}') 
+# # def get_user_images(self, model):
+# def single_image_method(self,model):
+#     serializer_context={'request': self.context.get('request')}                    
+#     try:
+#         # queryset=UserImage.objects.filter(id=model.id)
+#         queryset=UserImage.objects.get(id=model.id)
+#         serializer=UserImageSerializer(queryset, many=True, context=serializer_context)
+#         return serializer.data
+#     except:
+#         response=Response()
+#         response['Queryset Validator'] = 'Proparbly corrupted data'
+#         return response
 
+# def user_images_method(self, model):
+        
+#         # page_size=5           # Paginator disabled because not get proper data
+#         # page_size=self.context['request'].query_params.get('size') or 10
 
-def time_method(self, model):
-    t=int(model.tier_t)
-    s=int(model.exp_time)
-    # s:int=600              # seconds test  :int
-    delta=str(datetime.timedelta(seconds=s))
-    
-    if t in [1,2]:
-        return 'No Time expiration permissions'         
-    else:                                  
-        return (f'Token Time expiration {delta}') 
+#         serializer_context={'request': self.context.get('request')}
+#                 # queryset should be single instance  but if not it is safer to use filter method instead of get
+#                                         # Set if/try to get single instance
+#         queryset=UserImage.objects.filter(user__id=model.id)       
+#         # queryset=UserImage.objects.get(user__id=model.id)
+
+#         # paginator=Paginator(queryset, page_size)
+#         # queryset=paginator.page(2)
+#         serializer=UserImageSerializer(queryset, many=True, context=serializer_context)
+#         return serializer.data
