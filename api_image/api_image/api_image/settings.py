@@ -31,7 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-
+SITE_ID = 1
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -46,6 +46,11 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'gallery',
+
+    # 'django_filters',
+    # 'api',
+    # 'rest_framework',
+    # 'gallery',
 
 ]
 
@@ -153,3 +158,15 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ]
 }
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+}
+

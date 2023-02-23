@@ -1,4 +1,6 @@
-from .function_serializers import *
+from .function_serializers import (
+                date_method, time_method, url_method, 
+                token_method, thumb1_method, thumb2_method )
 from gallery.models import *
 from rest_framework.response import Response
 from rest_framework import serializers
@@ -16,25 +18,32 @@ class UserImageSerializer(serializers.ModelSerializer):
     class Meta:
         model=UserImage
         # fields=["id",'user',"thumb1_url","thumb2_url","image_url","token_url"]
-        fields=["id",'user',"thumb1_url","thumb2_url","image_url","token_url","upload_date",'exp_time']
+        fields=["id",'user',"thumb1_url","thumb2_url","image_url",
+                "token_url","upload_date",'exp_time']
 
-    def get_token_url(self, model):
-        return token_method(self, model)
 
     def get_image_url(self, model):
         return url_method(self, model)
+        
 
     def get_thumb1_url(self, model):
         return thumb1_method(self,model)
-       
+        
+
     def get_thumb2_url(self, model):
         return thumb2_method(self,model)
        
+       
     def get_upload_date(self, model):
         return date_method(self,model)
+
+    def get_token_url(self, model):
+        return token_method(self, model)
+        
        
     def get_exp_time(self, model):
         return time_method(self,model)
+
 
 
 class UserSerializer(serializers.ModelSerializer):  

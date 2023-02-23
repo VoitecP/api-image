@@ -78,7 +78,8 @@ class SingleUserViewSet(ModelViewSet):
         # context={"user_id":self.kwargs["user_pk"]}
         return context
 
-## wrong
+
+
 class SingleImageViewSet(ModelViewSet):
     pagination_class=PageNumberPagination
     queryset=User.objects.filter(id=1)
@@ -93,17 +94,3 @@ class SingleImageViewSet(ModelViewSet):
         context={"user_id":self.kwargs["user_pk"]}
         # context={"user_id":self.kwargs["user_pk"]}
         return context
-
-    
-
-
-
-## select user from id or from list ? to view queryset
-## make redirection to self user images or 
-
-# or start from select by id/name  from invisible list then see list and then post
-### add pagination to list view of images in user
-
-## expiring link set config seconds in serializer in image send now!!!\
-
-# cleaning the import and pip and decoupler and check erors clean code and comments

@@ -8,9 +8,7 @@ from api.viewsets import *
 from .routers import router, user_router, image_router
 
 
-
 urlpatterns = [
-    path('', APIUrls.as_view(),name='base'),
     path('api/', APIUrls.as_view(),name='base'),
 
     path('', RedirectView.as_view(url='api/'),name='api-v2'),
@@ -27,4 +25,6 @@ urlpatterns = [
     path('api/v2/', include((image_router.urls,'image-nested-router'))),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
 

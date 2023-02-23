@@ -4,6 +4,11 @@ from gallery.models import *
 import pytz
 
 
+# Cannot send request.data using APIView Classes 
+# and need to use dummy path
+dummy_path="Fixed URL: http://127.0.0.1:8000"
+
+
 def token_method(self, model):
     t=int(model.tier_t)
     request=self.context.get('request')
@@ -17,8 +22,12 @@ def token_method(self, model):
     else: 
         if date < now - timedelta(seconds=duration):
             return 'Token link expired'
-        else:                                  
-            return request.build_absolute_uri(f'/api/token/{model.hash}')     
+        else:     
+            try:                             
+                return request.build_absolute_uri(f'/api/token/{model.hash}')
+            except:
+                return f'{dummy_path}{model.hash}'
+            # return request.data
 
 
 def url_method(self, model):
@@ -31,7 +40,7 @@ def url_method(self, model):
             url=model.img.url
             return request.build_absolute_uri(f'{url}')
         except:
-            return 'File not found'
+            return f'{dummy_path}{url}'
 
 
 def thumb1_method(self, model):
@@ -40,7 +49,7 @@ def thumb1_method(self, model):
         url=model.thumb_1.url
         return request.build_absolute_uri(f'{url}')
     except:
-        return 'File not found'
+        return f'{dummy_path}{url}'
 
 
 def thumb2_method(self, model):
@@ -53,7 +62,7 @@ def thumb2_method(self, model):
             url=model.thumb_2.url
             return request.build_absolute_uri(f'{url}')
         except:
-            return 'File not found'
+            return f'{dummy_path}{url}'
 
 
 def date_method(self, model):
