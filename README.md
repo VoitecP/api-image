@@ -42,15 +42,19 @@ pip install -r requirements.txt
 ```
 You need to create  Enviroment file .env 
 ```
+
 Create .env file setting in base dir api_image  open .env file and paste SECRET_KEY='your_key', set DEBUG=1 save file. Env-Template file will help you .
 
 ```
 Test database are already included !
 ```
+
 Load initial data to database
+
 ```
 py manage.py cmd_fixtures
 ```
 py manage.py runserver
 ```
+
 Project in Local Host server: http://127.0.0.1:8000/   or in Docker 192.168.99.100:8000
