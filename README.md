@@ -46,7 +46,7 @@ You need to create  Enviroment file .env
 Create .env file setting in base dir api_image  open .env file and paste SECRET_KEY='your_key', set DEBUG=1 save file. Env-Template file will help you .
 
 ```
-Test database are already included !
+Test database are already included ! Just clone and try :)
 ```
 
 Load initial data to database
