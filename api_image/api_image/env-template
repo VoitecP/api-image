@@ -1,3 +1,19 @@
 # Django your app secret key
 # env file template 
-SECRET_KEY =  'secret key in string format'
+
+SECRET_KEY='secret-key-in-string-format'
+DEBUG=1
+
+## docker has a problem with this setting so propably better set it in django conf file
+
+#ALLOWED_HOSTS=[]
+# ALLOWED_HOSTS=['192.168.99.100:8000','localhost','127.0.0.1','192.168.99.100']
+
+##
+## Settings for Docker SQL postgress
+# SQL_ENGINE=django.db.backends.postgresql
+# SQL_DATABASE=api_image_db
+# SQL_USER=user
+# SQL_PASSWORD=pass
+# SQL_HOST=db
+# SQL_PORT=5432
