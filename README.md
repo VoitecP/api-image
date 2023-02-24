@@ -10,11 +10,6 @@
 - ( In development progress ) 
 
 
-Any sugesstions and ideas to improve or expand this aplication will welcome.
-Data to login to admin panel:
-User: admin2
-pass: admin2
-
 
 # Demo screens
 ![image](https://github.com/VoitecP/api-image/blob/6e2d3c6127358708f06928b2522adcc33a1cb636/Demo%20images/demo1.jpg)
@@ -64,5 +59,11 @@ py manage.py runserver
 ```
 Docker Image Link:
 https://hub.docker.com/r/voitecp/api-image
+
+
+Data to login in admin panel:
+User: admin2
+pass: admin2
+
 
 Project in Local Host server: http://127.0.0.1:8000/   or in Docker  http://192.168.99.100:8000/
