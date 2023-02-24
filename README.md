@@ -32,30 +32,32 @@ Execute run-app.bat
 BAT Script will automatic Install Venv and Run server ! :)
 But if you want to run manually, do as follow:
 
-```
+
 Create Virtual Enviroment in Python and activate
+
 ```
 py -m venv env
 ```
 ```
-source env/bin/activate
+source env/Scripts/activate.bat
+```
+```
+cd api-image/api_image/
 ```
 ```
 pip install -r requirements.txt
 ```
 You need to create  Enviroment file .env 
-```
 
 Create .env file setting in base dir api_image  open .env file and paste SECRET_KEY='your_key', set DEBUG=1 save file. Env-Template file will help you .
 
-```
 Test database are already included ! Just clone and try :)
-```
 
 Load initial data to database
 
 ```
 py manage.py cmd_fixtures
+```
 ```
 py manage.py runserver
 ```
