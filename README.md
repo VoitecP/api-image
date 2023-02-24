@@ -64,4 +64,4 @@ py manage.py runserver
 Docker Image Link:
 https://hub.docker.com/r/voitecp/api-image
 
-Project in Local Host server: http://127.0.0.1:8000/   or in Docker  http://192.168.99.100:8000
+Project in Local Host server: http://127.0.0.1:8000/   or in Docker  http://192.168.99.100:8000/
