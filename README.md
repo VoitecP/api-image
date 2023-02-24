@@ -11,6 +11,9 @@
 
 
 Any sugesstions and ideas to improve or expand this aplication will welcome.
+Data to login to admin panel:
+User: admin2
+pass: admin2
 
 
 # Demo screens
