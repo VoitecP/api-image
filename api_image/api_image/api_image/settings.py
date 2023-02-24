@@ -11,25 +11,41 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import os                           ## added manually
+import os, environ                          ## added manually
 from decouple import config         ## added manually
+
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Environ path
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = config('SECRET_KEY')                # Key in .env file
+# SECRET_KEY = config('SECRET_KEY')  # Key in .env file
+SECRET_KEY = env('SECRET_KEY')
+# SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
+#DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.99.100','127.0.0.1']
+# ALLOWED_HOSTS = ['*']
+#ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS','').split()
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS')
 
+# DOCKER_HST ='192.168.99.100'
+# LOCAL_HST = '127.0.0.1'
 
 SITE_ID = 1
 
@@ -47,11 +63,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'gallery',
 
-    # 'django_filters',
-    # 'api',
-    # 'rest_framework',
-    # 'gallery',
-
+   
 ]
 
 MIDDLEWARE = [
@@ -89,12 +101,39 @@ WSGI_APPLICATION = 'api_image.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+## Django Default DB
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+ ## Docker Config  ##
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+#         "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+#         "USER": os.environ.get("SQL_USER", "user"),
+#         "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+#         "HOST": os.environ.get("SQL_HOST", "localhost"),
+#         "PORT": os.environ.get("SQL_PORT", "5432"),
+#     }
+# }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+#         "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+#         "USER": os.environ.get("SQL_USER", "user"),
+#         "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+#         "HOST": os.environ.get("SQL_HOST", "localhost"),
+#         "PORT": os.environ.get("SQL_PORT", "5432"),
+#     }
+# }
+
 
 
 # Password validation

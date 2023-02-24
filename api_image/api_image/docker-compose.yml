@@ -1,0 +1,62 @@
+version: '3.7'
+# version: '3.8'   # Unspupported better 3.7
+
+
+services:
+  web:
+    #container_name: name  # default   #  name without :latest
+    restart: always
+    container_name: api_image_web
+    build: .        # the same path as docker
+    #build: ./app
+
+    # Run command for django
+    command: python manage.py cmd_fixtures
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      #- ./app/:/usr/src/app/   # default   # must be relative path too ./
+      - ./api-image:/usr/src/
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env
+
+  #   depends_on:
+  #     - db
+ 
+  # postgres:
+  #   restart: always
+  #   image: postgres:latest
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data/
+
+  # db:
+  #   image: postgres:9.6-alpine
+  #   environment:
+  #     POSTGRES_DB: "db"
+  #     POSTGRES_HOST_AUTH_METHOD: "trust"
+
+  # db:
+  #   image: postgres:13.0-alpine
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  #   environment:
+  #     POSTGRES_HOST_AUTH_METHOD: trust
+  #     #- 'POSTGRES_HOST_AUTH_METHOD:trust'
+  #     POSTGRES_DB: api_imge_db
+  #     POSTGRES_USER: api-image-user
+  #     POSTGRES_PASSWORD: api-image
+  #     #-e POSTGRES_PASSWORD=password
+      
+  
+    
+      
+# volumes:
+#   postgres_data:
+#   web-static:
+#   pgdata:
+#   redisdata:  
+
+
