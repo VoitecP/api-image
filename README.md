@@ -25,10 +25,13 @@ git clone https://github.com/VoitecP/api-image.git
 ```
 cd api-image/api_image/
 ```
+```
 Execute run-app.bat  
 ```
-Script will automatic Install Venv and Run server ! :)
-But if you want manually, try:
+
+BAT Script will automatic Install Venv and Run server ! :)
+But if you want to run manually, do as follow:
+
 ```
 Create Virtual Enviroment in Python and activate
 ```
